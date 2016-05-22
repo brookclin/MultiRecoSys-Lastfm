@@ -38,6 +38,40 @@ def compare(ltype, drec, deva, target_user, count, calcResult):
     # print ltype, precision, recall, user_coverage
 
 
+def compareFolderOutput(ltype, dir, drec, deva, target_user, count, calcResult):
+    recall = 0
+    precision = 0
+    rec_user = drec.keys()
+    for i in rec_user:
+        t = set(deva[i])
+        r = set(drec[i])
+        k = len(r)
+        c_num = len(t.intersection(r))
+        recall += c_num * 1.0 / len(t)
+        precision += c_num * 1.0 / k
+    recall /= len(rec_user)
+    precision /= len(rec_user)
+    user_coverage = len(rec_user) * 1.0 / len(target_user)
+    calcResult.loc[count] = [ltype, precision, recall, user_coverage]
+    # if not os.path.exists("../conf_interval"):
+    #     os.mkdir("../conf_interval")
+    if not os.path.exists("../conf_interval/" + dir):
+        os.mkdir("../conf_interval/" + dir)
+    if not os.path.exists("../conf_interval/" + dir + "/precision"):
+        os.mkdir("../conf_interval/" + dir + "/precision")
+    if not os.path.exists("../conf_interval/" + dir + "/recall"):
+        os.mkdir("../conf_interval/" + dir + "/recall")
+    filename = "../conf_interval/" + dir + "/precision/" + str(ltype)
+    f = open(filename, "a")
+    print >> f, precision
+    f.close()
+    filename = "../conf_interval/" + dir + "/recall/" + str(ltype)
+    f = open(filename, "a")
+    print >> f, recall
+    f.close()
+    # print ltype, precision, recall, user_coverage
+
+
 resultK = pd.DataFrame(columns=['Type', 'Precision', 'Recall', 'User Coverage'])
 resultAlpha = pd.DataFrame(columns=['Alpha', 'Precision', 'Recall', 'User Coverage'])
 resultR = pd.DataFrame(columns=['Alpha', 'Precision', 'Recall', 'User Coverage'])
@@ -52,7 +86,6 @@ for i in np.arange(numlist):
     listpath = sys.argv[i + 1]
     reclist = pd.read_csv(listpath, delimiter=' ', names=['u', 'v', 'w'])
     drec = {k: g["v"].tolist() for k, g in reclist.groupby("u")}
-    listpath += "_train"
     compare(listpath, drec, deva, target_user, i, resultK)
 print >> outfile, resultK.sort_values('Precision', ascending=False)
 print now(), "Phase 1 on 80-10 train set done."
@@ -171,24 +204,25 @@ for K in np.arange(21):
     recR = pd.read_csv(r, sep=' ', header=None, names=['u', 'v', 'w'])
     drec = {k: g["v"].tolist() for k, g in rec.groupby("u")}
     drecR = {k: g["v"].tolist() for k, g in recR.groupby("u")}
-    # TODO: fixed the order of the two best results, according to the results on test set
-    # then add alpha=? + r=? on name
-    compare(str(alpha), drec, deva, target_user, K, resultAlpha)
-    compare(str(alpha), drecR, deva, target_user, K, resultR)
+
+    # compare(alpha, drec, deva, target_user, K, resultAlpha)
+    # compare(alpha, drecR, deva, target_user, K, resultR)
+    compareFolderOutput(alpha, "power_means_r=1", drec, deva, target_user, K, resultAlpha)
+    compareFolderOutput(alpha, "power_means_r=5", drecR, deva, target_user, K, resultR)
     f.close()
     r.close()
-fig = plt.figure()
-ax = plt.axes()
-ax.plot(resultAlpha['Alpha'], resultAlpha['Precision'], '-b', label='Precision r=1')
-ax.plot(resultR['Alpha'], resultR['Precision'], '-g', label='Precision r=5')
-ax.legend(loc=2)
-title = 'Power Means on ' + testBestSetNames[0] + '/' + testBestSetNames[1]
-ax.set_title(title)
-ax.set_xlabel('Alpha')
-plt.savefig("figure.png", format='png')
-print >> outfile, resultAlpha
-print >> outfile, resultR
-print now(), "Phase 2 - Merge the best 2 RS's with Power Means done."
+# fig = plt.figure()
+# ax = plt.axes()
+# ax.plot(resultAlpha['Alpha'], resultAlpha['Precision'], '-b', label='Precision r=1')
+# ax.plot(resultR['Alpha'], resultR['Precision'], '-g', label='Precision r=5')
+# ax.legend(loc=2)
+# title = 'Power Means on ' + testBestSetNames[0] + '/' + testBestSetNames[1]
+# ax.set_title(title)
+# ax.set_xlabel('Alpha')
+# plt.savefig("figure.png", format='png')
+# print >> outfile, resultAlpha
+# print >> outfile, resultR
+# print now(), "Phase 2 - Merge the best 2 RS's with Power Means done."
 # final merging methods
 resultMerge = pd.DataFrame(columns=['Method', 'Precision', 'Recall', 'User Coverage'])
 
