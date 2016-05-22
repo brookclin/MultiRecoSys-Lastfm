@@ -27,6 +27,14 @@ def compare(ltype, drec, deva, target_user, count, calcResult):
     precision /= len(rec_user)
     user_coverage = len(rec_user) * 1.0 / len(target_user)
     calcResult.loc[count] = [ltype, precision, recall, user_coverage]
+    filename = "../conf_interval/" + ltype + "_precision"
+    f = open(filename, "a")
+    print >> f, precision
+    f.close()
+    filename = "../conf_interval/" + ltype + "_recall"
+    f = open(filename, "a")
+    print >> f, recall
+    f.close()
     # print ltype, precision, recall, user_coverage
 
 
@@ -44,6 +52,7 @@ for i in np.arange(numlist):
     listpath = sys.argv[i + 1]
     reclist = pd.read_csv(listpath, delimiter=' ', names=['u', 'v', 'w'])
     drec = {k: g["v"].tolist() for k, g in reclist.groupby("u")}
+    listpath += "_train"
     compare(listpath, drec, deva, target_user, i, resultK)
 print >> outfile, resultK.sort_values('Precision', ascending=False)
 print now(), "Phase 1 on 80-10 train set done."
@@ -106,6 +115,7 @@ for i in np.arange(2):
         filepath = "./weighted_" + name_test
     applist = pd.read_csv(filepath, delimiter=' ', names=['user', 'item', 'score'])
     drec = {k: g["item"].tolist() for k, g in applist.groupby("user")}
+    methodNames += "_test"
     compare(methodNames, drec, deva, target_user, i, resultBestSet)
     # Normalization
     applist['score'] = (applist['score'] - applist['score'].min()) / (applist['score'].max() - applist['score'].min())
@@ -113,10 +123,13 @@ for i in np.arange(2):
 print >> outfile, resultBestSet
 print now(), "Phase 2 - run 5 best RS's on test set done."
 # Merge the best 2 RS's with Power Means
-set1 = bestSet.iloc[0]
-set2 = bestSet.iloc[1]
-set1List = finalSets[0]
-set2List = finalSets[1]
+testBestSetNames = resultBestSet.sort_values('Precision', ascending=False).iloc[0:2, :]['Type']
+if testBestSetNames.iloc[0].find(bestSet.iloc[0]) != -1:
+    set1List = finalSets[0]
+    set2List = finalSets[1]
+else:
+    set1List = finalSets[1]
+    set2List = finalSets[0]
 
 for K in np.arange(21):
     alpha = K / 20.0
@@ -158,19 +171,21 @@ for K in np.arange(21):
     recR = pd.read_csv(r, sep=' ', header=None, names=['u', 'v', 'w'])
     drec = {k: g["v"].tolist() for k, g in rec.groupby("u")}
     drecR = {k: g["v"].tolist() for k, g in recR.groupby("u")}
-    compare(alpha, drec, deva, target_user, K, resultAlpha)
-    compare(alpha, drecR, deva, target_user, K, resultR)
+    # TODO: fixed the order of the two best results, according to the results on test set
+    # then add alpha=? + r=? on name
+    compare(str(alpha), drec, deva, target_user, K, resultAlpha)
+    compare(str(alpha), drecR, deva, target_user, K, resultR)
     f.close()
     r.close()
-#fig = plt.figure()
-#ax = plt.axes()
-#ax.plot(resultAlpha['Alpha'], resultAlpha['Precision'], '-b', label='Precision r=1')
-#ax.plot(resultR['Alpha'], resultR['Precision'], '-g', label='Precision r=5')
-#ax.legend(loc=2)
-#title = 'Power Means on ' + set1 + '/' + set2
-#ax.set_title(title)
-#ax.set_xlabel('Alpha')
-#plt.savefig("figure.png", format='png')
+fig = plt.figure()
+ax = plt.axes()
+ax.plot(resultAlpha['Alpha'], resultAlpha['Precision'], '-b', label='Precision r=1')
+ax.plot(resultR['Alpha'], resultR['Precision'], '-g', label='Precision r=5')
+ax.legend(loc=2)
+title = 'Power Means on ' + testBestSetNames[0] + '/' + testBestSetNames[1]
+ax.set_title(title)
+ax.set_xlabel('Alpha')
+plt.savefig("figure.png", format='png')
 print >> outfile, resultAlpha
 print >> outfile, resultR
 print now(), "Phase 2 - Merge the best 2 RS's with Power Means done."
