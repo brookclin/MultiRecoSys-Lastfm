@@ -106,37 +106,37 @@ for i in np.arange(2):
     methodName = methodNames.split('_')  # eg.: recavg_ib_cos
     name_test = methodName[1] + "_" + methodName[2] + "_test"
     if methodName[1] == 'ub':
-        degreearg = "python ../complete_degrees.py ub ./similarity_" + name_test
-        sfarg = "../socialfiltering -u 1892 -i 17632 -r ratings_train.dat -t target_users.dat -l ratings_test_input.dat -g similarity_" + name_test + "_complete -k 10 -a weighted_" + name_test + " > ./avg_" + name_test
+        degreearg = "python ../../complete_degrees.py ub ./similarity_" + name_test
+        sfarg = "../../socialfiltering -u 1892 -i 17632 -r ratings_train.dat -t target_users.dat -l ratings_test_input.dat -g similarity_" + name_test + "_complete -k 10 -a weighted_" + name_test + " > ./avg_" + name_test
         if methodName[2] == 'cos':
-            simarg = "../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat > ./similarity_" + name_test
+            simarg = "../../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat > ./similarity_" + name_test
         elif methodName[2] == 'jaccard':
-            simarg = "../sim-jaccard -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat > ./similarity_" + name_test
+            simarg = "../../sim-jaccard -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat > ./similarity_" + name_test
         elif methodName[2] == 'q1a0':
-            simarg = "../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 1 -a 0 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 1 -a 0 > ./similarity_" + name_test
         elif methodName[2] == 'q1a0.5':
-            simarg = "../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 1 -a 0.5 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 1 -a 0.5 > ./similarity_" + name_test
         elif methodName[2] == 'q5a0':
-            simarg = "../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 5 -a 0 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 5 -a 0 > ./similarity_" + name_test
         elif methodName[2] == 'q5a0.5':
-            simarg = "../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 5 -a 0.5 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -u 1892 -i 17632 -r ratings_train.dat -t ratings_test_input.dat -q 5 -a 0.5 > ./similarity_" + name_test
     elif methodName[1] == 'ib':
-        degreearg = "python ../complete_degrees.py ib ./similarity_" + name_test
-        sfarg = "../socialfiltering -u 1892 -i 17632 -r ratings_train.dat -t target_users.dat -l ratings_test_input.dat -g similarity_" + name_test + "_complete -k 10 -b 1 -a weighted_" + name_test + " > ./avg_" + name_test
+        degreearg = "python ../../complete_degrees.py ib ./similarity_" + name_test
+        sfarg = "../../socialfiltering -u 1892 -i 17632 -r ratings_train.dat -t target_users.dat -l ratings_test_input.dat -g similarity_" + name_test + "_complete -k 10 -b 1 -a weighted_" + name_test + " > ./avg_" + name_test
         if methodName[2] == 'cos':
-            simarg = "../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat > ./similarity_" + name_test
+            simarg = "../../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat > ./similarity_" + name_test
         elif methodName[2] == 'jaccard':
-            simarg = "../sim-jaccard -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat > ./similarity_" + name_test
+            simarg = "../../sim-jaccard -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat > ./similarity_" + name_test
         elif methodName[2] == 'q1a0':
-            simarg = "../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 1 -a 0 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 1 -a 0 > ./similarity_" + name_test
         elif methodName[2] == 'q1a0.5':
-            simarg = "../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 1 -a 0.5 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 1 -a 0.5 > ./similarity_" + name_test
         elif methodName[2] == 'q5a0':
-            simarg = "../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 5 -a 0 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 5 -a 0 > ./similarity_" + name_test
         elif methodName[2] == 'q5a0.5':
-            simarg = "../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 5 -a 0.5 > ./similarity_" + name_test
+            simarg = "../../sim-cosine -i 1892 -u 17632 -r ratings_train_iuv.dat -t ratings_train_iuv.dat -q 5 -a 0.5 > ./similarity_" + name_test
         elif methodName[2] == 'arule':
-            os.system("../apriori-simple.py ratings_train.dat")
+            os.system("../../apriori-simple.py ratings_train.dat")
             simarg = "sed '/-/d;/inf/d;/^$/d' sim_arule > ./similarity_" + name_test
     os.system(simarg)
     os.system(degreearg)
