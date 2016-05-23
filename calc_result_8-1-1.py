@@ -281,7 +281,7 @@ for key in f:
     f[key].seek(0)
     rec = pd.read_csv(f[key], sep=' ', header=None, names=['u', 'v', 'w'])
     drec = {k: g["v"].tolist() for k, g in rec.groupby("u")}
-    compare(key, drec, deva, target_user, count, resultMerge)
+    compareFolderOutput(key, "methods", drec, deva, target_user, count, resultMerge)
     count += 1
     f[key].close()
 print >> outfile, resultMerge
