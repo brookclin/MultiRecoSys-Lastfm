@@ -37,7 +37,6 @@ def compare(ltype, drec, deva, target_user, count, calcResult):
     f.close()
     # print ltype, precision, recall, user_coverage
 
-
 def compareFolderOutput(ltype, dir, drec, deva, target_user, count, calcResult):
     recall = 0
     precision = 0
